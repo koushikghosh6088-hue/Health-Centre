@@ -1,0 +1,198 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  phone     String?
+  name      String
+  role      UserRole @default(PATIENT)
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  appointments Appointment[]
+  testBookings TestBooking[]
+  testimonials Testimonial[]
+
+  @@map("users")
+}
+
+model Doctor {
+  id             String   @id @default(cuid())
+  name           String
+  specialization String
+  qualification  String?
+  experience     Int? // years of experience
+  consultationFee Float
+  image          String?
+  bio            String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  appointments   Appointment[]
+  availabilities DoctorAvailability[]
+
+  @@map("doctors")
+}
+
+model DoctorAvailability {
+  id        String    @id @default(cuid())
+  doctorId  String
+  dayOfWeek Int // 0 = Sunday, 1 = Monday, etc.
+  startTime String // "09:00"
+  endTime   String // "17:00"
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@map("doctor_availabilities")
+}
+
+model Test {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  category    String? // Blood Test, Imaging, etc.
+  duration    Int? // duration in minutes
+  preparation String? // preparation instructions
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  testBookings TestBookingItem[]
+
+  @@map("tests")
+}
+
+model Appointment {
+  id            String            @id @default(cuid())
+  patientId     String
+  doctorId      String
+  appointmentDate DateTime
+  timeSlot      String // "10:00-10:30"
+  status        AppointmentStatus @default(PENDING)
+  notes         String?
+  totalAmount   Float
+  paymentId     String?
+  paymentStatus PaymentStatus     @default(PENDING)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  // Relations
+  patient User   @relation(fields: [patientId], references: [id])
+  doctor  Doctor @relation(fields: [doctorId], references: [id])
+
+  @@map("appointments")
+}
+
+model TestBooking {
+  id            String        @id @default(cuid())
+  patientId     String
+  bookingDate   DateTime      @default(now())
+  preferredDate DateTime? // when patient wants tests done
+  preferredTime String? // preferred time slot
+  status        BookingStatus @default(PENDING)
+  totalAmount   Float
+  paymentId     String?
+  paymentStatus PaymentStatus @default(PENDING)
+  notes         String?
+  address       String? // for home collection
+  isHomeCollection Boolean    @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  patient User              @relation(fields: [patientId], references: [id])
+  tests   TestBookingItem[]
+
+  @@map("test_bookings")
+}
+
+model TestBookingItem {
+  id            String @id @default(cuid())
+  testBookingId String
+  testId        String
+  quantity      Int    @default(1)
+  price         Float
+
+  // Relations
+  testBooking TestBooking @relation(fields: [testBookingId], references: [id], onDelete: Cascade)
+  test        Test        @relation(fields: [testId], references: [id])
+
+  @@map("test_booking_items")
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  patientId String
+  name      String // can be different from user name for privacy
+  message   String
+  rating    Int // 1-5 stars
+  isActive  Boolean  @default(false) // admin approval required
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  patient User @relation(fields: [patientId], references: [id])
+
+  @@map("testimonials")
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("contact_messages")
+}
+
+// Enums
+enum UserRole {
+  PATIENT
+  ADMIN
+  STAFF
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
