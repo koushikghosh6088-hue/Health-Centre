@@ -3,6 +3,9 @@ import { db } from '@/lib/db'
 import bcrypt from 'bcryptjs'
 import { generateToken } from '@/lib/auth'
 
+// Use Node.js runtime
+export const runtime = 'nodejs'
+
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json()
@@ -34,13 +37,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    console.log('Generating token for user:', { id: user.id, email: user.email, role: user.role })
     const token = generateToken({
       userId: user.id,
       email: user.email,
       role: user.role,
       name: user.name
     })
+    console.log('Generated token:', token)
 
+    // Create the response
     const response = NextResponse.json({ 
       success: true, 
       user: {
@@ -51,10 +57,21 @@ export async function POST(request: NextRequest) {
       }
     })
     
+    // Set the cookie
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax' as const,
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7 // 7 days
+    }
+    
+    console.log('Setting cookie with options:', cookieOptions)
     response.cookies.set('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      path: '/',
       maxAge: 60 * 60 * 24 * 7 // 7 days
     })
 

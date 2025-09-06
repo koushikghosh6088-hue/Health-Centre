@@ -1,11 +1,8 @@
-"use client"
+'use client'
 
 import { 
-  Calendar, 
   Clock, 
   Shield, 
-  Users, 
-  User,   // ✅ added User import
   Award, 
   Heart, 
   TestTube, 
@@ -16,100 +13,168 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import Link from "next/link"
+
+const services = [
+  { 
+    icon: Heart, 
+    title: "Cardiology", 
+    desc: "Advanced heart care and treatment with specialized cardiac facilities and expert cardiologists." 
+  },
+  { 
+    icon: TestTube, 
+    title: "Diagnostics", 
+    desc: "State-of-the-art diagnostic facilities with quick and accurate test results." 
+  },
+  { 
+    icon: Stethoscope, 
+    title: "General Medicine", 
+    desc: "Comprehensive healthcare solutions for all your medical needs with experienced physicians." 
+  },
+  { 
+    icon: Shield, 
+    title: "Preventive Care", 
+    desc: "Regular health checkups and screenings to prevent and detect health issues early." 
+  },
+  { 
+    icon: Award, 
+    title: "Specialist Doctors", 
+    desc: "Access to highly qualified medical professionals across various specializations." 
+  },
+  { 
+    icon: Clock, 
+    title: "24/7 Support", 
+    desc: "Round-the-clock emergency services and medical assistance whenever you need." 
+  }
+]
+
+const testimonials = [
+  {
+    name: "John Doe",
+    comment: "Exceptional care and attention to detail. The staff was very professional and caring throughout my treatment.",
+    rating: 5
+  },
+  {
+    name: "Jane Smith",
+    comment: "State-of-the-art facilities and expert doctors. I'm very satisfied with the quality of care I received.",
+    rating: 5
+  },
+  {
+    name: "Robert Johnson",
+    comment: "Quick appointments and thorough diagnosis. The diagnostic center is well-equipped with modern technology.",
+    rating: 5
+  }
+]
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
       {/* Hero Section */}
-      <section className="px-4 pt-20 pb-32 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900">
-          Advanced Diagnostic & Heart Care Center
+      <section className="w-full max-w-5xl text-center">
+        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-6">
+          Your Health, Our Priority
         </h1>
-        <p className="text-lg md:text-xl mb-8 text-gray-600 max-w-2xl mx-auto">
-          Comprehensive healthcare services with state-of-the-art diagnostic facilities
-          and expert cardiac care.
+        <p className="text-xl text-gray-600 mb-8">
+          Advanced diagnostic services with state-of-the-art technology and expert care
         </p>
-        <Button size="lg" className="rounded-2xl px-8 py-6 text-lg">
-          Book Appointment
-        </Button>
-      </section>
-
-      {/* Services Section */}
-      <section className="px-4 py-20 bg-white">
-        <h2 className="text-3xl font-bold text-center mb-16">Our Services</h2>
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {[
-            { icon: Heart, title: "Cardiology", desc: "Advanced heart care and treatment" },
-            { icon: TestTube, title: "Diagnostics", desc: "Comprehensive diagnostic facilities" },
-            { icon: Stethoscope, title: "General Medicine", desc: "Complete healthcare solutions" },
-            { icon: Shield, title: "Preventive Care", desc: "Health checkups and screenings" },
-            { icon: Award, title: "Specialist Doctors", desc: "Expert medical professionals" },
-            { icon: Clock, title: "24/7 Support", desc: "Round the clock emergency services" }
-          ].map((service, i) => (
-            <Card key={i} className="rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-6 text-center">
-                <service.icon className="h-12 w-12 mx-auto mb-4 text-blue-600" />
-                <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-                <p className="text-gray-600">{service.desc}</p>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="flex justify-center gap-4">
+          <Button size="lg" asChild>
+            <Link href="/tests">Browse Tests</Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <Link href="/doctors">Our Doctors</Link>
+          </Button>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="px-4 py-20 bg-gray-50">
-        <h2 className="text-3xl font-bold text-center mb-16">Test Prices</h2>
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {[
-            { test: "ECG", price: "₹500" },
-            { test: "Echocardiography", price: "₹2,500" },
-            { test: "Blood Test Package", price: "₹1,200" },
-            { test: "TMT", price: "₹3,000" },
-            { test: "Full Body Checkup", price: "₹5,000" },
-            { test: "Cardiac Screening", price: "₹4,500" }
-          ].map((item, i) => (
-            <Card key={i} className="rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold mb-2">{item.test}</h3>
-                <p className="text-2xl font-bold text-blue-600">{item.price}</p>
-              </CardContent>
-            </Card>
-          ))}
+      {/* Services Section */}
+      <section className="w-full max-w-5xl py-24">
+        <h2 className="text-3xl font-bold text-center mb-12">Our Services</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {services.map((service, index) => {
+            const Icon = service.icon
+            return (
+              <Card key={index} className="border-2 hover:border-primary transition-colors">
+                <CardContent className="pt-6">
+                  <div className="mb-4">
+                    <Icon className="w-10 h-10 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">{service.title}</h3>
+                  <p className="text-gray-600">{service.desc}</p>
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="px-4 py-20 bg-white">
-        <h2 className="text-3xl font-bold text-center mb-16">Patient Testimonials</h2>
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {[
-            { name: "Rahul Sharma", text: "Excellent care and modern facilities. The doctors are very professional." },
-            { name: "Priya Verma", text: "Highly satisfied with the diagnostic services. Quick and accurate results." }
-          ].map((t, i) => (
-            <Card key={i} className="rounded-2xl shadow-lg">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <User className="mr-3 h-5 w-5" /> {/* ✅ fixed User usage */}
-                  <span className="font-semibold">{t.name}</span>
+      <section className="w-full max-w-5xl py-24">
+        <h2 className="text-3xl font-bold text-center mb-12">What Our Patients Say</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {testimonials.map((testimonial, index) => (
+            <Card key={index} className="border-2">
+              <CardContent className="pt-6">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  ))}
                 </div>
-                <p className="text-gray-600">{t.text}</p>
+                <p className="text-gray-600 mb-4">{testimonial.comment}</p>
+                <p className="font-semibold">{testimonial.name}</p>
               </CardContent>
             </Card>
           ))}
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="px-4 py-20 bg-blue-600 text-white text-center">
-        <h2 className="text-3xl font-bold mb-6">Ready to Book Your Appointment?</h2>
-        <Button 
-          size="lg" 
-          className="rounded-2xl px-8 py-6 text-lg bg-white text-blue-600 hover:bg-gray-100"
-        >
-          Schedule Now <ArrowRight className="ml-2 h-5 w-5" />
+      {/* Features Section */}
+      <section className="w-full max-w-5xl py-24">
+        <h2 className="text-3xl font-bold text-center mb-12">Why Choose Us</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex gap-4 items-start">
+            <CheckCircle className="w-6 h-6 text-primary flex-shrink-0" />
+            <div>
+              <h3 className="text-xl font-bold mb-2">Advanced Technology</h3>
+              <p className="text-gray-600">State-of-the-art diagnostic equipment for accurate results</p>
+            </div>
+          </div>
+          <div className="flex gap-4 items-start">
+            <CheckCircle className="w-6 h-6 text-primary flex-shrink-0" />
+            <div>
+              <h3 className="text-xl font-bold mb-2">Expert Doctors</h3>
+              <p className="text-gray-600">Team of experienced healthcare professionals</p>
+            </div>
+          </div>
+          <div className="flex gap-4 items-start">
+            <CheckCircle className="w-6 h-6 text-primary flex-shrink-0" />
+            <div>
+              <h3 className="text-xl font-bold mb-2">Quick Results</h3>
+              <p className="text-gray-600">Fast and accurate diagnostic reports</p>
+            </div>
+          </div>
+          <div className="flex gap-4 items-start">
+            <CheckCircle className="w-6 h-6 text-primary flex-shrink-0" />
+            <div>
+              <h3 className="text-xl font-bold mb-2">Affordable Care</h3>
+              <p className="text-gray-600">Competitive pricing with high-quality service</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="w-full max-w-5xl py-24 text-center">
+        <h2 className="text-3xl font-bold mb-6">Ready to Book Your Test?</h2>
+        <p className="text-xl text-gray-600 mb-8">
+          Schedule your diagnostic test today and take the first step towards better health
+        </p>
+        <Button size="lg" className="gap-2" asChild>
+          <Link href="/tests/book">
+            Book Now <ArrowRight className="w-5 h-5" />
+          </Link>
         </Button>
       </section>
-    </div>
+    </main>
   )
 }

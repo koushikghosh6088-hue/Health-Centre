@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Doctor, ApiResponse, PaginatedResponse } from '@/types'
 import { formatCurrency, getDayName } from '@/lib/utils'
+import { getDoctorAvatar } from '@/lib/constants'
 import { 
   Calendar, 
   Clock, 
@@ -78,8 +80,9 @@ export default function DoctorsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="bg-white rounded-lg shadow p-6">
-                  <div className="h-6 bg-gray-200 rounded mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4"></div>
+                  <div className="h-6 bg-gray-200 rounded mb-4 w-3/4 mx-auto"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2 w-1/2 mx-auto"></div>
                   <div className="h-4 bg-gray-200 rounded mb-2"></div>
                   <div className="h-4 bg-gray-200 rounded mb-4"></div>
                   <div className="h-10 bg-gray-200 rounded"></div>
@@ -175,8 +178,15 @@ export default function DoctorsPage() {
                 <div key={doctor.id} className="modern-card p-8 group animate-slide-up" style={{animationDelay: `${index * 0.1}s`}}>
                   {/* Doctor Avatar & Header */}
                   <div className="relative mb-6">
-                    <div className={`w-20 h-20 bg-gradient-to-br ${bgGradient} rounded-2xl mx-auto flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 mb-4`}>
-                      <User className="h-10 w-10 text-white" />
+                    <div className="relative w-24 h-24 mx-auto mb-4">
+                      <Image
+                        src={getDoctorAvatar(index)}
+                        alt={doctor.name}
+                        width={96}
+                        height={96}
+                        className="rounded-full object-cover shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110 ring-2 ring-white"
+                      />
+                      <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${bgGradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
                     </div>
                     <div className="text-center">
                       <h3 className="text-xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors mb-1">
