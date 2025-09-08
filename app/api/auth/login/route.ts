@@ -10,6 +10,14 @@ export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json()
 
+    // Input validation
+    if (!email || !password) {
+      return NextResponse.json(
+        { success: false, error: 'Email and password are required' },
+        { status: 400 }
+      )
+    }
+
     // Find user and include role
     const user = await db.user.findUnique({
       where: { email },
@@ -18,23 +26,37 @@ export async function POST(request: NextRequest) {
         email: true,
         password: true,
         name: true,
-        role: true
+        role: true,
+        isActive: true
       }
     })
 
+    // Generic error message to prevent user enumeration
+    const invalidCredentialsResponse = NextResponse.json(
+      { success: false, error: 'Invalid credentials' },
+      { status: 401 }
+    )
+
+    // Check if user exists
     if (!user) {
+      console.log('Login attempt failed: User not found', { email })
+      return invalidCredentialsResponse
+    }
+
+    // Check if user is active - handle case where isActive might be null in existing records
+    if (user.isActive === false) {
+      console.log('Login attempt failed: Account inactive', { email })
       return NextResponse.json(
-        { success: false, error: 'Invalid credentials' },
-        { status: 401 }
+        { success: false, error: 'Account is inactive. Please contact support.' },
+        { status: 403 }
       )
     }
 
+    // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password)
     if (!isValidPassword) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid credentials' },
-        { status: 401 }
-      )
+      console.log('Login attempt failed: Invalid password', { email })
+      return invalidCredentialsResponse
     }
 
     console.log('Generating token for user:', { id: user.id, email: user.email, role: user.role })

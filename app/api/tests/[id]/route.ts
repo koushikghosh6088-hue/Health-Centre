@@ -110,44 +110,7 @@ export async function PUT(
   }
 }
 
-// DELETE /api/tests/[id] - Delete test
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    // Verify admin authentication
-    const token = request.cookies.get('token')?.value
-    if (!token) {
-      return NextResponse.json(
-        { success: false, error: 'Not authenticated' },
-        { status: 401 }
-      )
-    }
 
-    const payload = verifyToken(token)
-    if (!payload || payload.role !== 'ADMIN') {
-      return NextResponse.json(
-        { success: false, error: 'Insufficient permissions' },
-        { status: 403 }
-      )
-    }
 
-    await db.test.delete({
-      where: { id: params.id }
-    })
-
-    return NextResponse.json({
-      success: true,
-      message: 'Test deleted successfully'
-    })
-  } catch (error) {
-    console.error('Error deleting test:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to delete test' },
-      { status: 500 }
-    )
-  }
-}
 
 

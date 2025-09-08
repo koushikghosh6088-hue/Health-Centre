@@ -59,7 +59,7 @@ export const notificationConfig: NotificationConfig = {
       host: getEnvVar('SMTP_HOST', 'smtp.gmail.com'),
       port: getNumberEnv('SMTP_PORT', 587),
       user: getEnvVar('SMTP_USER'),
-      password: getEnvVar('SMTP_PASSWORD'),
+      password: getEnvVar('SMTP_PASS'),
     },
   },
   sms: {
@@ -91,7 +91,7 @@ export function validateNotificationConfig(): { isValid: boolean; errors: string
       errors.push('SMTP_USER is required when email notifications are enabled')
     }
     if (!notificationConfig.email.smtp.password) {
-      errors.push('SMTP_PASSWORD is required when email notifications are enabled')
+      errors.push('SMTP_PASS is required when email notifications are enabled')
     }
   }
 

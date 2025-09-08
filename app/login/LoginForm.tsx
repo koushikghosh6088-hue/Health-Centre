@@ -40,12 +40,19 @@ export default function LoginForm() {
       if (result.success) {
         toast.success('Login successful')
         
-        if (result.user && result.user.role === 'ADMIN') {
-          console.log('Redirecting to admin...')
-          await router.replace('/admin')
+        // Verify user role and redirect accordingly
+        if (result.user) {
+          if (result.user.role === 'ADMIN') {
+            console.log('Admin login verified, redirecting to admin dashboard...')
+            await router.replace('/admin')
+          } else {
+            console.log('User login successful, redirecting to home...')
+            await router.replace('/')
+          }
         } else {
-          console.log('Redirecting to home...')
-          await router.replace('/')
+          // If no user data is returned despite success, handle as error
+          console.error('Login response missing user data')
+          toast.error('Authentication error')
         }
       } else {
         console.error('Login failed:', result.error)

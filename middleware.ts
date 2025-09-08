@@ -35,12 +35,22 @@ export function middleware(request: NextRequest) {
     console.log('Middleware - User role:', payload.role)
   }
 
-  // If accessing admin routes, check for admin role
+  // If accessing admin routes, strictly check for admin role
   if (path.startsWith('/admin')) {
-    if (!payload || payload.role !== 'ADMIN') {
-      console.log('Middleware - Admin access denied')
+    // No token or invalid token
+    if (!payload) {
+      console.log('Middleware - Admin access denied: No valid token')
       return NextResponse.redirect(new URL('/login', request.url))
     }
+    
+    // Not an admin
+    if (payload.role !== 'ADMIN') {
+      console.log('Middleware - Admin access denied: Insufficient privileges', { role: payload.role })
+      // Redirect non-admin users to home page instead of login
+      return NextResponse.redirect(new URL('/', request.url))
+    }
+    
+    console.log('Middleware - Admin access granted', { userId: payload.userId, role: payload.role })
   }
 
   // If already logged in and trying to access login/signup, redirect to home

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
+import { LogOut, User } from 'lucide-react'
 
 interface User {
   name: string
@@ -18,9 +19,13 @@ export function AuthButtons() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch('/api/auth/me')
+        const res = await fetch('/api/auth/me', {
+          credentials: 'include',
+          cache: 'no-store'
+        })
         if (res.ok) {
           const data = await res.json()
+          console.log('AuthButtons - Auth check response:', data)
           if (data.success && data.user) {
             setUser(data.user)
           }
@@ -51,13 +56,20 @@ export function AuthButtons() {
   if (user) {
     return (
       <div className="flex items-center space-x-3">
-        <span className="text-sm font-medium">{user.name}</span>
+        <div className="flex items-center space-x-2">
+          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+            <span className="text-sm font-bold">{user.name.charAt(0).toUpperCase()}</span>
+          </div>
+          <span className="text-sm font-medium">{user.name}</span>
+        </div>
         <Button
           size="sm"
           variant="ghost"
           onClick={handleLogout}
+          className="flex items-center space-x-1"
         >
-          Logout
+          <LogOut className="h-4 w-4" />
+          <span>Logout</span>
         </Button>
       </div>
     )

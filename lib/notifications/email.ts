@@ -43,7 +43,7 @@ class EmailService {
       return
     }
 
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       host: notificationConfig.email.smtp.host,
       port: notificationConfig.email.smtp.port,
       secure: notificationConfig.email.smtp.port === 465,

@@ -28,8 +28,26 @@ export function generateToken(payload: JWTPayload): string {
 
 export function verifyToken(token: string): JWTPayload | null {
   try {
+    if (!token || token.trim() === '') {
+      console.error('Token verification failed: Empty token')
+      return null
+    }
+    
     console.log('Verifying token with secret:', JWT_SECRET.slice(0, 3) + '...')
     const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
+    
+    // Validate payload structure
+    if (!decoded || !decoded.userId || !decoded.email || !decoded.role) {
+      console.error('Token verification failed: Invalid payload structure')
+      return null
+    }
+    
+    // Validate role is one of the allowed values
+    if (!['ADMIN', 'STAFF', 'PATIENT'].includes(decoded.role)) {
+      console.error('Token verification failed: Invalid role', { role: decoded.role })
+      return null
+    }
+    
     console.log('Token verification successful. Payload:', {
       userId: decoded.userId,
       email: decoded.email,

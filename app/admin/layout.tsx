@@ -44,12 +44,24 @@ export default function AdminLayout({
 
   const checkAuth = async () => {
     try {
-      const response = await fetch('/api/auth/me')
+      const response = await fetch('/api/auth/me', {
+        credentials: 'include',
+        cache: 'no-store'
+      })
       const result = await response.json()
 
-      if (result.success && (result.user.role === 'ADMIN' || result.user.role === 'STAFF')) {
-        setUser(result.user)
+      // Strict role validation
+      if (result.success && result.user) {
+        // Only allow ADMIN role for admin dashboard
+        if (result.user.role === 'ADMIN') {
+          console.log('Admin authentication verified')
+          setUser(result.user)
+        } else {
+          console.log('Access denied: User is not an admin', { role: result.user.role })
+          router.push('/')
+        }
       } else {
+        console.log('Authentication failed, redirecting to login')
         router.push('/login')
       }
     } catch (error) {

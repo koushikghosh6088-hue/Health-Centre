@@ -31,6 +31,21 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is configured for easy deployment on Vercel. Follow these steps:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Create a Vercel account at [vercel.com](https://vercel.com) if you don't have one
+2. Install the Vercel CLI: `npm install -g vercel`
+3. Run `vercel login` and follow the prompts to log in
+4. From the project root directory, run `vercel` to deploy
+5. Configure the following environment variables in the Vercel dashboard:
+   - `DATABASE_URL`: PostgreSQL connection string
+   - `JWT_SECRET`: Secure random string for JWT authentication
+   - `NEXTAUTH_SECRET`: Secure random string for NextAuth
+   - `NEXTAUTH_URL`: Your production URL
+   - `SMTP_USER` and `SMTP_PASS`: For email notifications
+   - Payment gateway credentials (Razorpay/Stripe)
+
+6. Set up a PostgreSQL database (Vercel Postgres, Supabase, or any other provider)
+7. Run the database migrations: `npx prisma migrate deploy`
+
+For more details, see the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
