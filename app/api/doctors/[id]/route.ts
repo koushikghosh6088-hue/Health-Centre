@@ -4,12 +4,12 @@ import { db } from '@/lib/db'
 // GET /api/doctors/[id] - Get single doctor
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const doctor = await db.doctor.findUnique({
       where: { 
-        id: params.id,
+        id: context.params.id,
         isActive: true 
       },
       include: {
@@ -43,12 +43,12 @@ export async function GET(
 // DELETE /api/doctors/[id] - Delete a doctor
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     // First check if doctor exists
     const doctor = await db.doctor.findUnique({
-      where: { id: params.id }
+      where: { id: context.params.id }
     })
 
     if (!doctor) {
@@ -60,12 +60,12 @@ export async function DELETE(
 
     // Delete doctor's availabilities first
     await db.doctorAvailability.deleteMany({
-      where: { doctorId: params.id }
+      where: { doctorId: context.params.id }
     })
 
     // Then delete the doctor
     await db.doctor.delete({
-      where: { id: params.id }
+      where: { id: context.params.id }
     })
 
     return NextResponse.json({
