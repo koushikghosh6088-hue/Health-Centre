@@ -68,13 +68,13 @@ const testimonials = [
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between px-4 py-12 sm:px-6 lg:px-8 lg:py-24">
       {/* Hero Section */}
       <section className="w-full max-w-5xl text-center">
         <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-6">
           Your Health, Our Priority
         </h1>
-        <p className="text-xl text-gray-600 mb-8">
+        <p className="text-lg sm:text-xl text-gray-600 mb-8">
           Advanced diagnostic services with state-of-the-art technology and expert care
         </p>
         <div className="flex justify-center gap-4">
@@ -166,7 +166,7 @@ export default function Home() {
       {/* CTA Section */}
       <section className="w-full max-w-5xl py-24 text-center">
         <h2 className="text-3xl font-bold mb-6">Ready to Book Your Test?</h2>
-        <p className="text-xl text-gray-600 mb-8">
+        <p className="text-lg sm:text-xl text-gray-600 mb-8">
           Schedule your diagnostic test today and take the first step towards better health
         </p>
         <Button size="lg" className="gap-2" asChild>
